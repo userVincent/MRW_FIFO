@@ -107,4 +107,3 @@ The **DRAM** and **MRW_FIFO** modules are highly optimized for FPGA environments
 
 ## TODO
 Test the modules in an FPGA using an ILA.
-Synthesizing the code using vivado to make sure that Distributed RAM configuration of SLICEM is used to implement the DRAM.
