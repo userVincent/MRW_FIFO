@@ -190,4 +190,94 @@ class MRW_FIFOTester extends AnyFlatSpec with ChiselScalatestTester {
             }
         }
     }
+
+    "MRW_FIFO" should "allow parallel reads and writes in a setup with 5 write and 2 read ports" in {
+        test(new MRW_FIFO(UInt(8.W), 2, 5, 8)).withAnnotations(Seq(WriteVcdAnnotation)) { dut =>
+            // Fill the FIFO
+            var data = 1
+            var read_data = 1
+            for (i <- 0 until 25) {
+                for (j <- 0 until 5) {
+                    if (dut.io.enq(j).ready.peek().litToBoolean) {
+                        dut.io.enq(j).valid.poke(true.B)
+                        dut.io.enq(j).bits.poke((data).U)
+                        data += 1
+                    } else {
+                        dut.io.enq(j).valid.poke(false.B)
+                    }
+                }
+                dut.clock.step()
+
+                for (j <- 0 until 2) {
+                    if (dut.io.deq(j).valid.peek().litToBoolean) {
+                        dut.io.deq(j).ready.poke(true.B)
+                        dut.io.deq(j).bits.expect((read_data).U)
+                        read_data += 1
+                    } else {
+                        dut.io.deq(j).ready.poke(false.B)
+                    }
+                }
+            }
+        }
+    }
+
+    "MRW_FIFO" should "allow parallel reads and writes in a setup with 2 write and 5 read ports" in {
+        test(new MRW_FIFO(UInt(8.W), 5, 2, 8)).withAnnotations(Seq(WriteVcdAnnotation)) { dut =>
+            // Fill the FIFO
+            var data = 1
+            var read_data = 1
+            for (i <- 0 until 25) {
+                for (j <- 0 until 2) {
+                    if (dut.io.enq(j).ready.peek().litToBoolean) {
+                        dut.io.enq(j).valid.poke(true.B)
+                        dut.io.enq(j).bits.poke((data).U)
+                        data += 1
+                    } else {
+                        dut.io.enq(j).valid.poke(false.B)
+                    }
+                }
+                dut.clock.step()
+
+                for (j <- 0 until 5) {
+                    if (dut.io.deq(j).valid.peek().litToBoolean) {
+                        dut.io.deq(j).ready.poke(true.B)
+                        dut.io.deq(j).bits.expect((read_data).U)
+                        read_data += 1
+                    } else {
+                        dut.io.deq(j).ready.poke(false.B)
+                    }
+                }
+            }
+        }
+    }
+
+    "MRW_FIFO" should "allow parallel reads and writes in a setup with 3 write and 3 read ports" in {
+        test(new MRW_FIFO(UInt(8.W), 3, 3, 8)).withAnnotations(Seq(WriteVcdAnnotation)) { dut =>
+            // Fill the FIFO
+            var data = 1
+            var read_data = 1
+            for (i <- 0 until 25) {
+                for (j <- 0 until 3) {
+                    if (dut.io.enq(j).ready.peek().litToBoolean) {
+                        dut.io.enq(j).valid.poke(true.B)
+                        dut.io.enq(j).bits.poke((data).U)
+                        data += 1
+                    } else {
+                        dut.io.enq(j).valid.poke(false.B)
+                    }
+                }
+                dut.clock.step()
+
+                for (j <- 0 until 3) {
+                    if (dut.io.deq(j).valid.peek().litToBoolean) {
+                        dut.io.deq(j).ready.poke(true.B)
+                        dut.io.deq(j).bits.expect((read_data).U)
+                        read_data += 1
+                    } else {
+                        dut.io.deq(j).ready.poke(false.B)
+                    }
+                }
+            }
+        }
+    }
 }
