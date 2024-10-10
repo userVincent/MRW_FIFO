@@ -142,4 +142,52 @@ class MRW_FIFOTester extends AnyFlatSpec with ChiselScalatestTester {
             }
         }
     }
+
+    "MRW_FIFO" should "allow parallel writes in a setup with 3 writes and 1 read ports" in {
+        test(new MRW_FIFO(UInt(8.W), 1, 3, 8)).withAnnotations(Seq(WriteVcdAnnotation)) { dut =>
+            // Fill the FIFO
+            var data = 1
+            for (i <- 0 until 16) {
+                for (j <- 0 until 3) {
+                    if (dut.io.enq(j).ready.peek().litToBoolean) {
+                        dut.io.enq(j).valid.poke(true.B)
+                        dut.io.enq(j).bits.poke((data).U)
+                        data += 1
+                    } else {
+                        dut.io.enq(j).valid.poke(false.B)
+                    }
+                }
+                dut.clock.step()
+
+                // read every clock cycle
+                dut.io.deq(0).ready.poke(true.B)
+                dut.io.deq(0).valid.expect(true.B)
+                dut.io.deq(0).bits.expect((i+1).U)
+            }
+        }
+    }
+
+    "MRW_FIFO" should "allow parallel writes in a setup with 3 writes and 1 read ports, only using 2 write ports" in {
+        test(new MRW_FIFO(UInt(8.W), 1, 3, 8)).withAnnotations(Seq(WriteVcdAnnotation)) { dut =>
+            // Fill the FIFO
+            var data = 1
+            for (i <- 0 until 16) {
+                for (j <- 0 until 2) {
+                    if (dut.io.enq(j).ready.peek().litToBoolean) {
+                        dut.io.enq(j).valid.poke(true.B)
+                        dut.io.enq(j).bits.poke((data).U)
+                        data += 1
+                    } else {
+                        dut.io.enq(j).valid.poke(false.B)
+                    }
+                }
+                dut.clock.step()
+
+                // read every clock cycle
+                dut.io.deq(0).ready.poke(true.B)
+                dut.io.deq(0).valid.expect(true.B)
+                dut.io.deq(0).bits.expect((i+1).U)
+            }
+        }
+    }
 }
