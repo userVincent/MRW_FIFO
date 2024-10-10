@@ -95,3 +95,7 @@ To see what tests where ran to get these diagrams and in case you want to run th
 
 ## Conclusion
 The **DRAM** and **MRW_FIFO** modules are highly optimized for FPGA environments, particularly for Xilinx FPGAs using SLICEM resources. With configurable read/write ports, asynchronous read capabilities, and the ability to handle high-throughput applications, these modules are well-suited for advanced buffer management and memory access needs.
+
+## TODO
+Test the modules in an FPGA using an ILA.
+Synthesizing the code using vivado to make sure that Distributed RAM configuration of SLICEM is used to implement the DRAM.
