@@ -93,6 +93,15 @@ Below are some example timing diagrams illustrating MRW_FIFO operations. These d
 
 To see what tests where ran to get these diagrams and in case you want to run the tests yourself you can clone this repo and run sbt test which will run all the test code found in 'src/test/scala'. After running sbt test, you will be able to find the timing diagrams (.vcd) in the test_run_dir folder.
 
+## After Synthesis using Vivado
+To check wether our chisel DRAM implementation actually correctly gets synthesized to a DRAM and not registers or BRAM, we generated verilog code from out MRW_FIFO that can be found in the generated folder.
+
+Below you can see that BRAM (1 write, 3 read, 0 read/write, depth of 8, data of 8 bits) was synthesized to use 28 LUTs, of wich 4 are used as combinatorial logic and 28 are used as Distributed RAM.
+
+![image](https://github.com/user-attachments/assets/647ace67-d045-4e9a-8733-02789c3cd098)
+![image](https://github.com/user-attachments/assets/ed27804b-def7-407b-a748-96aa41abe4f4)
+
+
 ## Conclusion
 The **DRAM** and **MRW_FIFO** modules are highly optimized for FPGA environments, particularly for Xilinx FPGAs using SLICEM resources. With configurable read/write ports, asynchronous read capabilities, and the ability to handle high-throughput applications, these modules are well-suited for advanced buffer management and memory access needs.
 
